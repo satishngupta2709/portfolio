@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satish Narayan Gupta</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --cream: #f7f4ef;
+            --ink: #1a1814;
+            --ink2: #4a4740;
+            --ink3: #8a8780;
+            --rule: #d8d4cc;
+            --accent: #2a2420;
+            --gold: #b8936a;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            overflow-x: hidden;
+        }
+
+        /* CURSOR */
+        .cursor {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--ink);
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s;
+        }
+
+        .cursor-ring {
+            position: fixed;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid rgba(26, 24, 20, 0.3);
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: all 0.18s ease;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 800;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.8rem 5rem;
+            mix-blend-mode: multiply;
+        }
+
+        .nav-mark {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            color: var(--ink);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none
+        }
+
+        .nav-links a {
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink3);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--ink)
+        }
+
+        /* PARALLAX WRAPPER */
+        .parallax-section {
+            position: relative;
+            overflow: hidden
+        }
+
+        .parallax-bg {
+            position: absolute;
+            inset: -20%;
+            will-change: transform;
+            pointer-events: none;
+        }
+
+        /* HERO */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 0 5rem 5rem;
+            background: var(--cream);
+            position: relative;
+        }
+
+        .hero-lines {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(var(--rule) 1px, transparent 1px);
+            background-size: 100% 80px;
+            opacity: 0.4;
+        }
+
+        .hero-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 300;
+            color: var(--ink3);
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: up 1s 0.2s ease forwards;
+        }
+
+        .hero-h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(4.5rem, 9vw, 9rem);
+            font-weight: 300;
+            line-height: 0.92;
+            letter-spacing: -0.02em;
+            opacity: 0;
+            animation: up 1s 0.35s ease forwards;
+        }
+
+        .hero-h1 em {
+            font-style: italic;
+            color: var(--ink2)
+        }
+
+        .hero-sub {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--rule);
+            opacity: 0;
+            animation: up 1s 0.5s ease forwards;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .hero-desc {
+            font-size: 0.85rem;
+            font-weight: 300;
+            color: var(--ink2);
+            max-width: 420px;
+            line-height: 1.75;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center
+        }
+
+        .btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.6rem;
+            border: 1px solid var(--ink);
+            border-radius: 2px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink);
+            text-decoration: none;
+            transition: background 0.25s, color 0.25s;
+        }
+
+        .btn-ghost:hover {
+            background: var(--ink);
+            color: var(--cream)
+        }
+
+        .btn-link {
+            font-size: 0.72rem;
+            font-weight: 400;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ink3);
+            text-decoration: none;
+            border-bottom: 1px solid var(--rule);
+            padding-bottom: 1px;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .btn-link:hover {
+            color: var(--ink);
+            border-color: var(--ink)
+        }
+
+        @keyframes up {
+            from {
+                opacity: 0;
+                transform: translateY(28px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        /* MARQUEE */
+        .marquee-wrap {
+            border-top: 1px solid var(--rule);
+            border-bottom: 1px solid var(--rule);
+            padding: 0.9rem 0;
+            overflow: hidden;
+            white-space: nowrap;
+            background: var(--ink);
+        }
+
+        .marquee-track {
+            display: inline-flex;
+            gap: 0;
+            animation: marquee 30s linear infinite;
+        }
+
+        .marquee-track span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 300;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: rgba(247, 244, 239, 0.5);
+            padding: 0 2.5rem;
+        }
+
+        .marquee-track .sep {
+            color: var(--gold);
+            padding: 0
+        }
+
+        @keyframes marquee {
+            to {
+                transform: translateX(-50%)
+            }
+        }
+
+        /* ABOUT / SKILLS */
+        #skills {
+            padding: 7rem 5rem;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 6rem;
+            border-bottom: 1px solid var(--rule);
+            position: relative;
+        }
+
+        .section-index {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.62rem;
+            color: var(--ink3);
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        .section-h {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 3.5vw, 3rem);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+        }
+
+        .side-label {
+            padding-top: 0.25rem
+        }
+
+        .skills-cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem
+        }
+
+        .skill-group h4 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.62rem;
+            font-weight: 400;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .skill-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem
+        }
+
+        .skill-list li {
+            font-size: 0.82rem;
+            font-weight: 300;
+            color: var(--ink2);
+            padding: 0.4rem 0;
+            border-bottom: 1px solid var(--rule);
+            display: flex;
+            justify-content: space-between;
+            transition: color 0.2s;
+        }
+
+        .skill-list li:hover {
+            color: var(--ink)
+        }
+
+        /* EXPERIENCE */
+        #experience {
+            padding: 7rem 5rem;
+            border-bottom: 1px solid var(--rule);
+            position: relative;
+        }
+
+        .exp-grid {
+            margin-top: 4rem
+        }
+
+        .exp-row {
+            display: grid;
+            grid-template-columns: 180px 1fr 120px;
+            gap: 2rem;
+            padding: 2.5rem 0;
+            border-top: 1px solid var(--rule);
+            position: relative;
+            transition: background 0.3s;
+        }
+
+        .exp-row:hover {
+            background: rgba(26, 24, 20, 0.02)
+        }
+
+        .exp-period-col {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 300;
+            color: var(--ink3);
+            letter-spacing: 0.06em;
+            padding-top: 0.2rem;
+        }
+
+        .exp-main {}
+
+        .exp-role-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+            margin-bottom: 0.35rem;
+        }
+
+        .exp-co {
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink3);
+            margin-bottom: 1.2rem;
+        }
+
+        .exp-co span {
+            display: inline-block;
+            margin-left: 0.6rem;
+            padding: 0.15rem 0.5rem;
+            font-size: 0.6rem;
+            border: 1px solid var(--rule);
+            border-radius: 2px;
+            color: var(--gold);
+            letter-spacing: 0.08em;
+        }
+
+        .exp-pts {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem
+        }
+
+        .exp-pts li {
+            font-size: 0.82rem;
+            font-weight: 300;
+            color: var(--ink2);
+            line-height: 1.7;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .exp-pts li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.68rem;
+            width: 4px;
+            height: 1px;
+            background: var(--gold);
+        }
+
+        .exp-type-col {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+        }
+
+        .type-pill {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.58rem;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.3rem 0.7rem;
+            border: 1px solid var(--rule);
+            border-radius: 100px;
+            color: var(--ink3);
+            white-space: nowrap;
+        }
+
+        /* PROJECT */
+        #projects {
+            padding: 7rem 5rem;
+            border-bottom: 1px solid var(--rule);
+            background: var(--ink);
+            color: var(--cream);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #projects .section-index {
+            color: rgba(247, 244, 239, 0.3)
+        }
+
+        #projects .section-h {
+            color: var(--cream)
+        }
+
+        .project-block {
+            margin-top: 4rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: start;
+        }
+
+        .project-left {}
+
+        .proj-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            font-weight: 300;
+            letter-spacing: -0.03em;
+            line-height: 0.95;
+            color: var(--cream);
+            margin-bottom: 0.5rem;
+        }
+
+        .proj-stack {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 300;
+            color: var(--gold);
+            letter-spacing: 0.12em;
+            margin-bottom: 2rem;
+        }
+
+        .proj-desc {
+            font-size: 0.85rem;
+            font-weight: 300;
+            color: rgba(247, 244, 239, 0.6);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .proj-features {
+            display: flex;
+            flex-direction: column;
+            gap: 0
+        }
+
+        .pf {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.9rem 0;
+            border-top: 1px solid rgba(247, 244, 239, 0.1);
+            font-size: 0.78rem;
+            font-weight: 300;
+            color: rgba(247, 244, 239, 0.7);
+            transition: color 0.2s;
+        }
+
+        .pf:hover {
+            color: var(--cream)
+        }
+
+        .pf-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.58rem;
+            color: rgba(247, 244, 239, 0.25);
+        }
+
+        .proj-visual-box {
+            aspect-ratio: 1;
+            border: 1px solid rgba(247, 244, 239, 0.1);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .proj-visual-box::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 30% 30%, rgba(184, 147, 106, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at 70% 70%, rgba(247, 244, 239, 0.03) 0%, transparent 60%);
+        }
+
+        .proj-ascii {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            line-height: 1.4;
+            color: rgba(247, 244, 239, 0.15);
+            letter-spacing: 0.05em;
+            white-space: pre;
+            user-select: none;
+            animation: flicker 4s ease infinite;
+        }
+
+        @keyframes flicker {
+
+            0%,
+            100% {
+                opacity: 0.15
+            }
+
+            50% {
+                opacity: 0.22
+            }
+
+            75% {
+                opacity: 0.12
+            }
+        }
+
+        /* STATS */
+        #stats {
+            padding: 5rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            border-bottom: 1px solid var(--rule);
+            gap: 0;
+        }
+
+        .stat-cell {
+            padding: 3rem 2rem;
+            border-right: 1px solid var(--rule);
+            position: relative;
+        }
+
+        .stat-cell:last-child {
+            border-right: none
+        }
+
+        .stat-n {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 4vw, 4rem);
+            font-weight: 300;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-l {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.62rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink3);
+        }
+
+        /* EDUCATION & CERTS */
+        #more {
+            padding: 7rem 5rem;
+            border-bottom: 1px solid var(--rule);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+        }
+
+        .edu-block {}
+
+        .cert-items {
+            margin-top: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0
+        }
+
+        .cert-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 0;
+            border-bottom: 1px solid var(--rule);
+        }
+
+        .cert-item:first-child {
+            border-top: 1px solid var(--rule)
+        }
+
+        .cert-name-t {
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--ink)
+        }
+
+        .cert-issuer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.62rem;
+            color: var(--ink3);
+            letter-spacing: 0.06em;
+        }
+
+        .edu-detail {
+            margin-top: 2.5rem;
+            padding: 2rem;
+            border: 1px solid var(--rule);
+            border-radius: 4px;
+        }
+
+        .edu-uni {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            font-weight: 300;
+            letter-spacing: -0.01em;
+            margin-bottom: 0.5rem;
+        }
+
+        .edu-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--ink3);
+            letter-spacing: 0.08em;
+            line-height: 1.8;
+        }
+
+        /* CONTACT */
+        #contact {
+            padding: 8rem 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-big {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 7vw, 7rem);
+            font-weight: 300;
+            letter-spacing: -0.03em;
+            line-height: 0.9;
+            max-width: 800px;
+            margin-bottom: 4rem;
+        }
+
+        .contact-big em {
+            font-style: italic;
+            color: var(--ink2)
+        }
+
+        .contact-row {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            padding-top: 2rem;
+            border-top: 1px solid var(--rule);
+        }
+
+        .c-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 300;
+            letter-spacing: 0.08em;
+            color: var(--ink2);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            padding-bottom: 1px;
+            transition: all 0.2s;
+        }
+
+        .c-link:hover {
+            color: var(--ink);
+            border-bottom-color: var(--ink)
+        }
+
+        .c-link .arrow {
+            font-style: normal;
+            transition: transform 0.2s
+        }
+
+        .c-link:hover .arrow {
+            transform: translate(3px, -3px)
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 1.5rem 5rem;
+            border-top: 1px solid var(--rule);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .f-l {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.62rem;
+            color: var(--ink3);
+            letter-spacing: 0.08em;
+        }
+
+        /* PARALLAX FLOATS */
+        .float-word {
+            position: absolute;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(6rem, 12vw, 14rem);
+            font-weight: 300;
+            font-style: italic;
+            color: rgba(26, 24, 20, 0.025);
+            letter-spacing: -0.03em;
+            pointer-events: none;
+            user-select: none;
+            will-change: transform;
+            white-space: nowrap;
+        }
+
+        /* SCROLL REVEAL */
+        .sr {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.8s ease, transform 0.8s ease
+        }
+
+        .sr.in {
+            opacity: 1;
+            transform: none
+        }
+
+        .sr-d1 {
+            transition-delay: 0.1s
+        }
+
+        .sr-d2 {
+            transition-delay: 0.2s
+        }
+
+        .sr-d3 {
+            transition-delay: 0.3s
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:900px) {
+            nav {
+                padding: 1.2rem 2rem
+            }
+
+            .nav-links {
+                display: none
+            }
+
+            #hero,
+            #skills,
+            #experience,
+            #projects,
+            #stats,
+            #more,
+            #contact,
+            footer {
+                padding-left: 2rem;
+                padding-right: 2rem
+            }
+
+            #skills,
+            #more {
+                grid-template-columns: 1fr;
+                gap: 3rem
+            }
+
+            .skills-cols {
+                grid-template-columns: 1fr
+            }
+
+            .project-block {
+                grid-template-columns: 1fr
+            }
+
+            .proj-visual-box {
+                aspect-ratio: 16/9
+            }
+
+            #stats {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .stat-cell {
+                border-bottom: 1px solid var(--rule);
+                border-right: none
+            }
+
+            .stat-cell:nth-child(odd) {
+                border-right: 1px solid var(--rule)
+            }
+
+            .exp-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem
+            }
+
+            .exp-type-col {
+                display: none
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="cursor" id="cur"></div>
+    <div class="cursor-ring" id="ring"></div>
+
+    <nav>
+        <a href="#" class="nav-mark">Satish N. Gupta</a>
+        <ul class="nav-links">
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#experience">Work</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO -->
+    <section id="hero" class="parallax-section">
+        <div class="hero-lines"></div>
+        <div class="float-word" id="fw1" style="top:15%;right:-5%">Systems</div>
+
+        <div class="hero-num">01 &mdash; Software Engineer</div>
+        <h1 class="hero-h1">
+            Satish<br>
+            <em>Narayan</em><br>
+            Gupta
+        </h1>
+        <div class="hero-sub">
+            <p class="hero-desc">
+                4+ years crafting scalable distributed systems and real-time data pipelines in fintech. Fraud detection,
+                compliance, and streaming at scale — for Jio Payments Bank, HDFC Bank, and Tata Capital.
+            </p>
+            <div class="hero-cta-group">
+                <a href="mailto:satishngupta27@gmail.com" class="btn-ghost">Hire me</a>
+                <a href="https://github.com/satishngupta27" target="_blank" class="btn-link">GitHub &nearr;</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee-wrap">
+        <div class="marquee-track">
+            <span>Apache Spark</span><span class="sep">&#9642;</span>
+            <span>Kafka Streams</span><span class="sep">&#9642;</span>
+            <span>Kubernetes</span><span class="sep">&#9642;</span>
+            <span>Fraud Detection</span><span class="sep">&#9642;</span>
+            <span>.NET Core</span><span class="sep">&#9642;</span>
+            <span>Elasticsearch</span><span class="sep">&#9642;</span>
+            <span>Apache Solr</span><span class="sep">&#9642;</span>
+            <span>Docker</span><span class="sep">&#9642;</span>
+            <span>Microservices</span><span class="sep">&#9642;</span>
+            <span>MySQL</span><span class="sep">&#9642;</span>
+            <span>MongoDB</span><span class="sep">&#9642;</span>
+            <span>Redis</span><span class="sep">&#9642;</span>
+            <span>NER Models</span><span class="sep">&#9642;</span>
+            <span>AWS &middot; GCP</span><span class="sep">&#9642;</span>
+            <span>Apache Spark</span><span class="sep">&#9642;</span>
+            <span>Kafka Streams</span><span class="sep">&#9642;</span>
+            <span>Kubernetes</span><span class="sep">&#9642;</span>
+            <span>Fraud Detection</span><span class="sep">&#9642;</span>
+            <span>.NET Core</span><span class="sep">&#9642;</span>
+            <span>Elasticsearch</span><span class="sep">&#9642;</span>
+            <span>Apache Solr</span><span class="sep">&#9642;</span>
+            <span>Docker</span><span class="sep">&#9642;</span>
+            <span>Microservices</span><span class="sep">&#9642;</span>
+            <span>MySQL</span><span class="sep">&#9642;</span>
+            <span>MongoDB</span><span class="sep">&#9642;</span>
+            <span>Redis</span><span class="sep">&#9642;</span>
+            <span>NER Models</span><span class="sep">&#9642;</span>
+            <span>AWS &middot; GCP</span><span class="sep">&#9642;</span>
+        </div>
+    </div>
+
+    <!-- SKILLS -->
+    <section id="skills" class="parallax-section">
+        <div class="float-word" id="fw2" style="bottom:0;left:-8%;font-size:10rem">Stack</div>
+        <div class="side-label sr">
+            <p class="section-index">02 &mdash; Skills</p>
+            <h2 class="section-h">Technical<br>Arsenal</h2>
+        </div>
+        <div class="skills-cols sr sr-d1">
+            <div class="skill-group">
+                <h4>Languages</h4>
+                <ul class="skill-list">
+                    <li>C# <span>Primary</span></li>
+                    <li>Python</li>
+                    <li>TypeScript</li>
+                    <li>JavaScript</li>
+                    <li>SQL (MySQL)</li>
+                    <li>Java</li>
+                </ul>
+            </div>
+            <div class="skill-group">
+                <h4>Frameworks</h4>
+                <ul class="skill-list">
+                    <li>.NET Core</li>
+                    <li>Apache Spark</li>
+                    <li>Apache Kafka</li>
+                    <li>Angular 2+</li>
+                    <li>ReactJS</li>
+                    <li>Node.js</li>
+                </ul>
+            </div>
+            <div class="skill-group">
+                <h4>Databases</h4>
+                <ul class="skill-list">
+                    <li>MySQL</li>
+                    <li>MongoDB</li>
+                    <li>Redis</li>
+                </ul>
+            </div>
+            <div class="skill-group">
+                <h4>Infrastructure</h4>
+                <ul class="skill-list">
+                    <li>Kubernetes</li>
+                    <li>Docker</li>
+                    <li>Solr Cloud</li>
+                    <li>Elasticsearch</li>
+                    <li>AWS &middot; GCP</li>
+                    <li>Microservices</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS -->
+    <section id="stats">
+        <div class="stat-cell sr">
+            <span class="stat-n">4+</span>
+            <span class="stat-l">Years Experience</span>
+        </div>
+        <div class="stat-cell sr sr-d1">
+            <span class="stat-n">10M+</span>
+            <span class="stat-l">Records Processed</span>
+        </div>
+        <div class="stat-cell sr sr-d2">
+            <span class="stat-n">98%</span>
+            <span class="stat-l">Batch Time Cut</span>
+        </div>
+        <div class="stat-cell sr sr-d3">
+            <span class="stat-n">3</span>
+            <span class="stat-l">Major Banks Served</span>
+        </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="experience" class="parallax-section">
+        <div class="float-word" id="fw3" style="top:-5%;right:-10%;font-size:12rem;opacity:1">Work</div>
+        <div class="sr">
+            <p class="section-index">03 &mdash; Experience</p>
+            <h2 class="section-h">Where I've<br>Worked</h2>
+        </div>
+        <div class="exp-grid">
+
+            <div class="exp-row sr">
+                <div class="exp-period-col">Dec 2024<br>&mdash; Present</div>
+                <div class="exp-main">
+                    <div class="exp-role-title">Software Engineer II</div>
+                    <div class="exp-co">Intellewings Pvt. Ltd. &middot; Remote <span>Full-time</span></div>
+                    <ul class="exp-pts">
+                        <li>Designed real-time feature calculation pipeline via Kafka Streams for fraud detection models
+                            — derived features and time-based aggregated metrics.</li>
+                        <li>Built centralized data distribution service with full loads, delta updates, and change
+                            tracking.</li>
+                        <li>Led Elasticsearch + Solr consolidation into unified Solr, including full data migration,
+                            reducing cloud costs.</li>
+                        <li>Deployed entity deduplication pipeline using NER and embedding-based similarity models over
+                            large datasets.</li>
+                    </ul>
+                </div>
+                <div class="exp-type-col"><span class="type-pill">Current</span></div>
+            </div>
+
+            <div class="exp-row sr sr-d1">
+                <div class="exp-period-col">Apr 2022<br>&mdash; Nov 2024</div>
+                <div class="exp-main">
+                    <div class="exp-role-title">Software Engineer I</div>
+                    <div class="exp-co">Intellewings Pvt. Ltd. &middot; Remote <span>Full-time</span></div>
+                    <ul class="exp-pts">
+                        <li>Cut screening batch time from 28 hours → 30 minutes for 100K records via caching, async, and
+                            multithreading.</li>
+                        <li>Revamped batch with Apache Spark — 10M records screened in under 60 minutes.</li>
+                        <li>Converted single-tenant → multi-tenant architecture with context-level ORM filters (Entity
+                            Framework).</li>
+                        <li>Deployed customer screening API on Kubernetes with horizontal scalability and high
+                            availability.</li>
+                        <li>Migrated to Solr Cloud with distributed indexing and load balancing.</li>
+                        <li>Upgraded stack from .NET Core 2.2 → 5.0, improving performance and reducing maintenance
+                            overhead.</li>
+                    </ul>
+                </div>
+                <div class="exp-type-col"><span class="type-pill">2yr 7mo</span></div>
+            </div>
+
+            <div class="exp-row sr sr-d2">
+                <div class="exp-period-col">Mar 2021<br>&mdash; Mar 2022</div>
+                <div class="exp-main">
+                    <div class="exp-role-title">Software Engineer Intern</div>
+                    <div class="exp-co">Intellewings Pvt. Ltd. &middot; Remote <span>Internship</span></div>
+                    <ul class="exp-pts">
+                        <li>Built full-text search with Solr — fuzzy matching, faceted search, low latency over large
+                            datasets.</li>
+                        <li>Built Adverse Media News Portal for fraud, terrorism, and money laundering detection.</li>
+                        <li>Containerized applications with Docker; automated MySQL backups to Azure Blob Storage.</li>
+                        <li>Integrated ML models via RESTful APIs; built parsers for multi-source data ingestion.</li>
+                    </ul>
+                </div>
+                <div class="exp-type-col"><span class="type-pill">1yr</span></div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- PROJECT -->
+    <section id="projects" class="parallax-section">
+        <div class="sr">
+            <p class="section-index" style="color:rgba(247,244,239,0.3)">04 &mdash; Projects</p>
+            <h2 class="section-h">Featured<br>Work</h2>
+        </div>
+        <div class="project-block">
+            <div class="project-left sr">
+                <div class="proj-name">Lego<br>Byte</div>
+                <div class="proj-stack">Java &middot; Java NIO &middot; RESP Protocol &middot; Networking</div>
+                <p class="proj-desc">
+                    A high-performance in-memory key-value store inspired by Redis — built with Java and Java NIO for
+                    asynchronous, non-blocking networking. Fully compatible with standard Redis clients.
+                </p>
+                <div class="proj-features">
+                    <div class="pf"><span>RESP protocol compatibility</span><span class="pf-num">01</span></div>
+                    <div class="pf"><span>SET, GET, INCR, DEL, EXPIRE, MULTI/EXEC</span><span class="pf-num">02</span>
+                    </div>
+                    <div class="pf"><span>AOF persistence with rewrite support</span><span class="pf-num">03</span>
+                    </div>
+                    <div class="pf"><span>Active & passive key expiration</span><span class="pf-num">04</span></div>
+                    <div class="pf"><span>Single-threaded event loop architecture</span><span class="pf-num">05</span>
+                    </div>
+                    <div class="pf"><span>Command pipelining & client management</span><span class="pf-num">06</span>
+                    </div>
+                </div>
+            </div>
+            <div class="project-right sr sr-d2">
+                <div class="proj-visual-box">
+                    <div class="proj-ascii">
+                        SET key "hello" +OK
+                        GET key "hello"
+                        EXPIRE key 60 :1
+                        TTL key :58
+                        MULTI +OK
+                        SET a 1 QUEUED
+                        INCR a QUEUED
+                        EXEC
+                        +OK
+                        :2
+                        INFO server
+                        version: 1.0.0
+                        connected: 4
+                        used_memory: 2.1MB</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EDUCATION & CERTS -->
+    <section id="more">
+        <div class="edu-block sr">
+            <p class="section-index">05 &mdash; Education</p>
+            <h2 class="section-h" style="margin-bottom:2.5rem">Academic<br>Background</h2>
+            <div class="edu-detail">
+                <div class="edu-uni">GLA University</div>
+                <div class="edu-meta">
+                    B.Tech &mdash; Computer Science<br>
+                    GPA: 8.0 / 10.0<br>
+                    Aug 2018 &mdash; May 2022<br>
+                    Mathura, Uttar Pradesh, India
+                </div>
+            </div>
+        </div>
+        <div class="sr sr-d1">
+            <p class="section-index">06 &mdash; Certifications</p>
+            <h2 class="section-h" style="margin-bottom:0">Credentials</h2>
+            <div class="cert-items">
+                <div class="cert-item">
+                    <div>
+                        <div class="cert-name-t">AWS Fundamentals Specialization</div>
+                        <div class="cert-issuer">Coursera &middot; Sep 2020 &middot; No Expiry</div>
+                    </div>
+                    <span style="font-size:0.65rem;color:var(--gold);font-family:'JetBrains Mono',monospace">&#9650;
+                        AWS</span>
+                </div>
+                <div class="cert-item">
+                    <div>
+                        <div class="cert-name-t">Introduction to Machine Learning</div>
+                        <div class="cert-issuer">Coursera &middot; May 2020 &middot; No Expiry</div>
+                    </div>
+                    <span style="font-size:0.65rem;color:var(--gold);font-family:'JetBrains Mono',monospace">&#9650;
+                        ML</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="parallax-section">
+        <div class="float-word" id="fw4" style="bottom:-5%;right:-5%;font-size:13rem">Hello</div>
+        <div class="contact-big sr">
+            Let's build<br>something<br><em>remarkable</em>
+        </div>
+        <div class="contact-row sr sr-d1">
+            <a href="mailto:satishngupta27@gmail.com" class="c-link">
+                satishngupta27@gmail.com <span class="arrow">&nearr;</span>
+            </a>
+            <a href="tel:+919149037618" class="c-link">
+                +91 91490 37618 <span class="arrow">&nearr;</span>
+            </a>
+            <a href="https://linkedin.com/in/satish-gupta27" target="_blank" class="c-link">
+                LinkedIn <span class="arrow">&nearr;</span>
+            </a>
+            <a href="https://github.com/satishngupta27" target="_blank" class="c-link">
+                GitHub <span class="arrow">&nearr;</span>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <span class="f-l">&copy; 2025 Satish Narayan Gupta</span>
+        <span class="f-l">Software Engineer &mdash; Fintech &middot; Distributed Systems</span>
+    </footer>
+
+    <script>
+        const cur = document.getElementById('cur');
+        const ring = document.getElementById('ring');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            cur.style.left = mx + 'px'; cur.style.top = my + 'px';
+        });
+        function animRing() {
+            rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+            ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+            requestAnimationFrame(animRing);
+        }
+        animRing();
+
+        document.querySelectorAll('a,button').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                ring.style.transform = 'translate(-50%,-50%) scale(2)';
+                ring.style.opacity = '0.5';
+            });
+            el.addEventListener('mouseleave', () => {
+                ring.style.transform = 'translate(-50%,-50%) scale(1)';
+                ring.style.opacity = '1';
+            });
+        });
+
+        const io = new IntersectionObserver(entries => {
+            entries.forEach((e, i) => {
+                if (e.isIntersecting) {
+                    setTimeout(() => e.target.classList.add('in'), i * 60);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.sr').forEach(el => io.observe(el));
+
+        const floats = [
+            { el: document.getElementById('fw1'), speed: 0.04 },
+            { el: document.getElementById('fw2'), speed: 0.06 },
+            { el: document.getElementById('fw3'), speed: 0.03 },
+            { el: document.getElementById('fw4'), speed: 0.05 },
+        ];
+
+        function onScroll() {
+            const sy = window.scrollY;
+            floats.forEach(f => {
+                if (f.el) f.el.style.transform = `translateY(${sy * f.speed}px)`;
+            });
+
+            document.querySelectorAll('.parallax-section').forEach(sec => {
+                const rect = sec.getBoundingClientRect();
+                const progress = -rect.top / (rect.height + window.innerHeight);
+                const bg = sec.querySelector('.parallax-bg');
+                if (bg) bg.style.transform = `translateY(${progress * 80}px)`;
+            });
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+    </script>
+</body>
+
+</html>
