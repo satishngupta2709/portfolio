@@ -76,6 +76,16 @@
             justify-content: space-between;
             padding: 1.8rem 5rem;
             mix-blend-mode: multiply;
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 1rem 5rem;
+            background: rgba(247, 244, 239, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--rule);
+            mix-blend-mode: normal;
         }
 
         .nav-mark {
@@ -565,7 +575,7 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.6rem;
             line-height: 1.4;
-            color: rgba(247, 244, 239, 0.15);
+            color: rgba(247, 244, 239, 0.8);
             letter-spacing: 0.05em;
             white-space: pre;
             user-select: none;
@@ -576,15 +586,15 @@
 
             0%,
             100% {
-                opacity: 0.15
+                opacity: 0.8
             }
 
             50% {
-                opacity: 0.22
+                opacity: 1
             }
 
             75% {
-                opacity: 0.12
+                opacity: 0.9
             }
         }
 
@@ -810,6 +820,10 @@
         @media(max-width:900px) {
             nav {
                 padding: 1.2rem 2rem
+            }
+
+            nav.scrolled {
+                padding: 1rem 2rem
             }
 
             .nav-links {
@@ -1240,8 +1254,17 @@
             { el: document.getElementById('fw4'), speed: 0.05 },
         ];
 
+        const nav = document.querySelector('nav');
+
         function onScroll() {
             const sy = window.scrollY;
+            
+            if (sy > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+
             floats.forEach(f => {
                 if (f.el) f.el.style.transform = `translateY(${sy * f.speed}px)`;
             });
