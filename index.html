@@ -556,10 +556,12 @@
             border: 1px solid rgba(247, 244, 239, 0.1);
             border-radius: 4px;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            align-items: flex-start;
+            justify-content: flex-start;
             position: relative;
             overflow: hidden;
+            background: rgba(10, 10, 10, 0.3);
+            cursor: text;
         }
 
         .proj-visual-box::before {
@@ -571,15 +573,48 @@
                 radial-gradient(circle at 70% 70%, rgba(247, 244, 239, 0.03) 0%, transparent 60%);
         }
 
-        .proj-ascii {
+        .proj-terminal {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.6rem;
-            line-height: 1.4;
+            font-size: 0.65rem;
+            line-height: 1.5;
             color: rgba(247, 244, 239, 0.8);
-            letter-spacing: 0.05em;
-            white-space: pre;
-            user-select: none;
-            animation: flicker 4s ease infinite;
+            width: 100%;
+            height: 100%;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .term-output {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            margin-bottom: 0.5rem;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .term-input-line {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .term-prompt {
+            color: var(--gold);
+        }
+
+        #term-in {
+            background: transparent;
+            border: none;
+            color: rgba(247, 244, 239, 0.9);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            flex: 1;
+            outline: none;
         }
 
         @keyframes flicker {
@@ -1125,22 +1160,21 @@
                 </div>
             </div>
             <div class="project-right sr sr-d2">
-                <div class="proj-visual-box">
-                    <div class="proj-ascii">
-                        SET key "hello" +OK
-                        GET key "hello"
-                        EXPIRE key 60 :1
-                        TTL key :58
-                        MULTI +OK
-                        SET a 1 QUEUED
-                        INCR a QUEUED
-                        EXEC
-                        +OK
-                        :2
-                        INFO server
-                        version: 1.0.0
-                        connected: 4
-                        used_memory: 2.1MB</div>
+                <div class="proj-visual-box" onclick="document.getElementById('term-in').focus()">
+                    <div class="proj-terminal">
+                        <div class="term-output" id="term-out">
+                            <div style="color:var(--gold)">LegoByte v1.0.0</div>
+                            <div>Type "help" for commands</div>
+                            <div>&nbsp;</div>
+                        </div>
+                        <div class="term-input-line">
+                            <span class="term-prompt">127.0.0.1:6379&gt;</span>
+                            <div style="position: relative; flex: 1; display: flex; align-items: center;">
+                                <span id="term-ghost" style="position: absolute; color: rgba(247, 244, 239, 0.3); pointer-events: none; white-space: pre; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;"></span>
+                                <input type="text" id="term-in" autocomplete="off" spellcheck="false" style="position: relative; z-index: 1;">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1278,6 +1312,158 @@
         }
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
+
+        // Redis terminal logic
+        const store = new Map();
+        const termIn = document.getElementById('term-in');
+        const termOut = document.getElementById('term-out');
+        const termContainer = document.querySelector('.proj-terminal');
+
+        function printLine(text, color = '') {
+            const div = document.createElement('div');
+            div.textContent = text;
+            if (color) div.style.color = color;
+            termOut.appendChild(div);
+            termContainer.scrollTop = termContainer.scrollHeight;
+        }
+
+        const commands = ['HELP', 'PING', 'SET key val [EX sec]', 'GET key', 'DEL key', 'INCR key', 'EXPIRE key sec', 'TTL key', 'KEYS *'];
+        const termGhost = document.getElementById('term-ghost');
+
+        termIn.addEventListener('input', () => {
+            const val = termIn.value;
+            if (!val) {
+                termGhost.textContent = '';
+                return;
+            }
+            const match = commands.find(c => c.toLowerCase().startsWith(val.toLowerCase()));
+            if (match) {
+                termGhost.textContent = val + match.substring(val.length);
+            } else {
+                termGhost.textContent = '';
+            }
+        });
+
+        termIn.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                if (termGhost.textContent) {
+                    termIn.value = termGhost.textContent;
+                    // Trigger input event to update ghost text if needed
+                    termIn.dispatchEvent(new Event('input'));
+                }
+            } else if (e.key === 'Enter') {
+                const input = termIn.value.trim();
+                termIn.value = '';
+                termGhost.textContent = '';
+                printLine(`127.0.0.1:6379> ${input}`);
+                
+                if (!input) return;
+
+                // Simple regex to parse commands handling quotes
+                const parts = input.match(/(?:[^\s"]+|"[^"]*")+/g) || [];
+                const cmd = parts[0].toUpperCase();
+                const args = parts.slice(1).map(s => s.replace(/(^"|"$)/g, ''));
+
+                try {
+                    switch (cmd) {
+                        case 'HELP':
+                            printLine('Commands: PING, SET key val [EX sec], GET key, DEL key, INCR key, EXPIRE key sec, TTL key, KEYS *', '#8a8780');
+                            break;
+                        case 'PING':
+                            if (args.length > 1) throw new Error("ERR wrong number of arguments for 'ping' command");
+                            if (args.length === 1) {
+                                printLine(`"${args[0]}"`);
+                            } else {
+                                printLine('PONG');
+                            }
+                            break;
+                        case 'SET':
+                            if (args.length < 2) throw new Error("ERR wrong number of arguments for 'set' command");
+                            let exp = null;
+                            if (args.length >= 4 && args[2].toUpperCase() === 'EX') {
+                                const sec = parseInt(args[3], 10);
+                                if (isNaN(sec)) throw new Error("ERR value is not an integer or out of range");
+                                exp = Date.now() + sec * 1000;
+                            }
+                            store.set(args[0], { val: args[1], exp });
+                            printLine('OK');
+                            break;
+                        case 'GET':
+                            if (args.length !== 1) throw new Error("ERR wrong number of arguments for 'get' command");
+                            const item = store.get(args[0]);
+                            if (item && item.exp && Date.now() > item.exp) store.delete(args[0]);
+                            const gval = store.has(args[0]) ? store.get(args[0]).val : undefined;
+                            printLine(gval !== undefined ? `"${gval}"` : '(nil)');
+                            break;
+                        case 'DEL':
+                            if (args.length === 0) throw new Error("ERR wrong number of arguments for 'del' command");
+                            let count = 0;
+                            args.forEach(k => { if(store.delete(k)) count++; });
+                            printLine(`(integer) ${count}`);
+                            break;
+                        case 'INCR':
+                            if (args.length !== 1) throw new Error("ERR wrong number of arguments for 'incr' command");
+                            const iItem = store.get(args[0]);
+                            if (iItem && iItem.exp && Date.now() > iItem.exp) store.delete(args[0]);
+                            let num = parseInt(store.has(args[0]) ? store.get(args[0]).val : '0', 10);
+                            if (isNaN(num)) throw new Error("ERR value is not an integer or out of range");
+                            num++;
+                            const iExp = store.has(args[0]) ? store.get(args[0]).exp : null;
+                            store.set(args[0], { val: num.toString(), exp: iExp });
+                            printLine(`(integer) ${num}`);
+                            break;
+                        case 'EXPIRE':
+                            if (args.length !== 2) throw new Error("ERR wrong number of arguments for 'expire' command");
+                            const eSec = parseInt(args[1], 10);
+                            if (isNaN(eSec)) throw new Error("ERR value is not an integer or out of range");
+                            const eItem = store.get(args[0]);
+                            if (!eItem || (eItem.exp && Date.now() > eItem.exp)) {
+                                if (eItem) store.delete(args[0]);
+                                printLine('(integer) 0');
+                            } else {
+                                store.set(args[0], { val: eItem.val !== undefined ? eItem.val : eItem, exp: Date.now() + eSec * 1000 });
+                                printLine('(integer) 1');
+                            }
+                            break;
+                        case 'TTL':
+                            if (args.length !== 1) throw new Error("ERR wrong number of arguments for 'ttl' command");
+                            const tItem = store.get(args[0]);
+                            if (!tItem) {
+                                printLine('(integer) -2');
+                            } else if (tItem.exp && Date.now() > tItem.exp) {
+                                store.delete(args[0]);
+                                printLine('(integer) -2');
+                            } else if (!tItem.exp) {
+                                printLine('(integer) -1');
+                            } else {
+                                printLine(`(integer) ${Math.ceil((tItem.exp - Date.now()) / 1000)}`);
+                            }
+                            break;
+                        case 'KEYS':
+                            if (args.length !== 1 || args[0] !== '*') throw new Error("ERR unsupported command or argument (only KEYS * supported here)");
+                            const keys = [];
+                            for (const [k, v] of store.entries()) {
+                                if (v.exp && Date.now() > v.exp) {
+                                    store.delete(k);
+                                } else {
+                                    keys.push(k);
+                                }
+                            }
+                            if (keys.length === 0) {
+                                printLine('(empty list or set)');
+                            } else {
+                                keys.forEach((k, i) => printLine(`${i+1}) "${k}"`));
+                            }
+                            break;
+                        default:
+                            printLine(`ERR unknown command \`${cmd}\``, '#ff6b6b');
+                    }
+                } catch (err) {
+                    printLine(err.message, '#ff6b6b');
+                }
+            }
+        });
     </script>
 </body>
 
